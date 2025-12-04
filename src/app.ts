@@ -1,6 +1,7 @@
 import express from "express";
 import initDB from "./database/db";
 import { authRouter } from "./modules/auth/auth.routes";
+import { vehiclesRouter } from "./modules/vehicles/vehciles.routes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/api/v1/", (req, res) => {
 
 // Routers
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/vehicles", vehiclesRouter);
 
 // 404 error
 app.use((req, res, next) => {
