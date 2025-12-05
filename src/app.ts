@@ -2,6 +2,8 @@ import express from "express";
 import initDB from "./database/db";
 import { authRouter } from "./modules/auth/auth.routes";
 import { vehiclesRouter } from "./modules/vehicles/vehciles.routes";
+import { bookingsRouter } from "./modules/bookings/bookings.routes";
+import { usersRouter } from "./modules/users/users.routes";
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.get("/api/v1/", (req, res) => {
 // Routers
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/vehicles", vehiclesRouter);
+app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/bookings", bookingsRouter);
 
 // 404 error
 app.use((req, res, next) => {
