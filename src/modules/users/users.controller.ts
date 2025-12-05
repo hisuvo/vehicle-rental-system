@@ -18,6 +18,47 @@ const getUsers = async (req: Request, res: Response) => {
   }
 };
 
+const updateUsers = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const result = await usersService.updateUsers(req.body, userId);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const deleteUsers = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const result = await usersService.deleteUsers(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const usersController = {
   getUsers,
+  updateUsers,
+  deleteUsers,
 };
