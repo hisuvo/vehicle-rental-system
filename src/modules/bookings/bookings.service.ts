@@ -41,6 +41,27 @@ const createBooking = async (payload: Record<string, unknown>) => {
   return { ...result.rows[0], vehicle };
 };
 
+const getBookings = async () => {
+  const result = await pool.query(`SELECT * FROM bookings`);
+
+  return result;
+};
+
+const updateBooking = async (
+  payload: Record<string, unknown>,
+  bookingID: any
+) => {
+  const { status } = payload;
+  const result = await pool.query(
+    `UPDATE bookings SET status=$1 WHERE id=$2 RETURNING *`,
+    [status, bookingID]
+  );
+
+  return result;
+};
+
 export const bookingServices = {
   createBooking,
+  getBookings,
+  updateBooking,
 };

@@ -3,7 +3,8 @@ import { bookingController } from "./bookings.controller";
 
 const router = Router();
 
-router.get("/", () => console.log("booking router"));
 router.post("/", bookingController.createBooking);
+router.get("/", bookingController.getBookings);
+router.put("/:bookingId", bookingController.updateBooking);
 
 export const bookingsRouter = router;
