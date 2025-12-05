@@ -1,4 +1,3 @@
-import { error } from "node:console";
 import { pool } from "../../database/db";
 
 const createVehicle = async (payload: Record<string, unknown>) => {
