@@ -44,12 +44,31 @@ const createBooking = async (payload: Record<string, unknown>) => {
 };
 
 const getBookings = async (user: any) => {
-  const { id, role } = user;
+  const { id, name, email, role } = user;
 
   // admin can show all bookings data
   if (role === "admin") {
     const result = await pool.query(`SELECT * FROM bookings`);
-    return result;
+
+    let rows = result.rows;
+
+    const adminResult = await Promise.all(
+      rows.map(async (row) => {
+        const { vehicle_id } = row;
+
+        const getVehicle = await pool.query(
+          `SELECT vehicle_name, registration_number FROM vehicles WHERE id=$1`,
+          [vehicle_id]
+        );
+
+        return {
+          ...result.rows[0],
+          vehicle: getVehicle.rows[0],
+        };
+      })
+    );
+
+    return adminResult;
   }
 
   // customer show only her own booking data
@@ -57,7 +76,27 @@ const getBookings = async (user: any) => {
     `SELECT * FROM bookings WHERE customer_id=$1`,
     [id]
   );
-  return result;
+
+  let rows = result.rows;
+
+  const userResult = await Promise.all(
+    rows.map(async (row) => {
+      const { vehicle_id } = row;
+
+      const getVehicle = await pool.query(
+        `SELECT vehicle_name, registration_number,type FROM vehicles WHERE id=$1`,
+        [vehicle_id]
+      );
+
+      return {
+        ...result.rows[0],
+        customer: { name, email },
+        vehicle: getVehicle.rows[0],
+      };
+    })
+  );
+
+  return userResult;
 };
 
 const updateBooking = async (
