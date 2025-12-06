@@ -7,10 +7,26 @@ const getUsers = async () => {
   return result;
 };
 
-const updateUsers = async (payload: Record<string, unknown>, userId: any) => {
-  const { name, email, phone } = payload;
+const updateUsers = async (
+  payload: Record<string, unknown>,
+  user: any,
+  userId: any
+) => {
+  const { name, email, phone, role } = payload;
 
-  //todo: check role and give access update role key
+  if (user.role === "admin") {
+    const result = await pool.query(
+      `UPDATE users SET name=$1, email=$2, phone=$3 role=$4 WHERE id=$5 RETURNING name, email, phone, role`,
+      [name, email, phone, role, userId]
+    );
+
+    return result;
+  }
+
+  // coustomer cann't chage her role
+  if (role) {
+    throw new Error("Admin only can change role");
+  }
 
   const result = await pool.query(
     `UPDATE users SET name=$1, email=$2, phone=$3 WHERE id=$4 RETURNING name, email, phone, role`,

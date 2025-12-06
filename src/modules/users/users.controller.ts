@@ -21,7 +21,8 @@ const getUsers = async (req: Request, res: Response) => {
 const updateUsers = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const result = await usersService.updateUsers(req.body, userId);
+    const user = req.user;
+    const result = await usersService.updateUsers(req.body, user, userId);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "User not found" });
