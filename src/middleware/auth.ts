@@ -9,7 +9,10 @@ const auth = (...roles: string[]) => {
       const token = authHeader?.split(" ")[1];
 
       if (!token) {
-        throw new Error("Your are not allowed");
+        return res.status(404).json({
+          saccess: false,
+          message: "Your Token Forbidden",
+        });
       }
 
       const decoded = jwt.verify(token, config.private_key!) as JwtPayload;
@@ -17,7 +20,10 @@ const auth = (...roles: string[]) => {
       req.user = decoded;
 
       if (roles.length && !roles.includes(decoded.role)) {
-        throw new Error("Your are unauthorize");
+        return res.status(401).json({
+          saccess: false,
+          message: "Your= are Unauthorized",
+        });
       }
 
       next();
@@ -25,6 +31,7 @@ const auth = (...roles: string[]) => {
       return res.status(500).json({
         success: false,
         message: error.message,
+        details: error,
       });
     }
   };
