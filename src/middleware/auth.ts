@@ -22,7 +22,7 @@ const auth = (...roles: string[]) => {
       if (roles.length && !roles.includes(decoded.role)) {
         return res.status(401).json({
           saccess: false,
-          message: "Your= are Unauthorized",
+          message: "You are Unauthorized",
         });
       }
 
