@@ -62,15 +62,13 @@ const updateVehicles = async (
 };
 
 const deletVehicles = async (vehicleId: any) => {
-  const checkBooking = await pool.query(
-    `SELECT availability_status FROM vehicles WHERE id=$1`,
+  const checkActiveBooking = await pool.query(
+    `SELECT id FROM bookings WHERE id=$1 AND status='active'`,
     [vehicleId]
   );
 
-  const { availability_status } = checkBooking.rows[0];
-
-  if (availability_status === "booked") {
-    throw new Error("Sorry, Your already booked!");
+  if (checkActiveBooking.rows.length > 0) {
+    throw new Error("Sorry, active booking exist");
   }
 
   const result = await pool.query(`DELETE FROM vehicles WHERE id=$1`, [

@@ -33,7 +33,7 @@ const getVehicle = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       success: true,
-      message: "Vehicle created successfully",
+      message: "Vehicles retrieved successfully",
       data: result.rows,
     });
   } catch (error: any) {
