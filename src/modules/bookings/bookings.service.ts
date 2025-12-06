@@ -3,17 +3,24 @@ import { pool } from "../../database/db";
 const createBooking = async (payload: Record<string, unknown>) => {
   const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
+  // booking time validation
+  const strat = new Date(rent_start_date as string);
+  const end = new Date(rent_end_date as string);
+
+  let bookingTime = (Number(end) - Number(strat)) / (1000 * 60 * 60 * 24);
+  if (bookingTime === 0) bookingTime = 1;
+
+  if (bookingTime <= 0) {
+    throw new Error("Rental end data must be big start date");
+  }
+
+  // Vehicles data gets so that can calucolte total price and availablity status
   const vehicleData = await pool.query(`SELECT * FROM vehicles WHERE id=$1`, [
     vehicle_id,
   ]);
 
-  const {
-    vehicle_name,
-    type,
-    registration_number,
-    daily_rent_price,
-    availability_status,
-  } = vehicleData.rows[0];
+  const { vehicle_name, daily_rent_price, availability_status } =
+    vehicleData.rows[0];
 
   if (availability_status === "booked") {
     throw new Error("vehicle alredy Booked");
@@ -25,12 +32,7 @@ const createBooking = async (payload: Record<string, unknown>) => {
     vehicle_id,
   ]);
 
-  const bookingDay = await pool.query(
-    `SELECT $1::date - $2::date AS difference`,
-    [rent_end_date, rent_start_date]
-  );
-
-  const total_price = daily_rent_price * bookingDay.rows[0].difference;
+  const total_price = daily_rent_price * bookingTime;
   const vehicle = { vehicle_name, daily_rent_price };
 
   const result = await pool.query(
@@ -51,7 +53,10 @@ const getBookings = async (user: any) => {
   }
 
   // customer show only her own booking data
-  const result = await pool.query(`SELECT * FROM bookings WHERE id=$1`, [id]);
+  const result = await pool.query(
+    `SELECT * FROM bookings WHERE customer_id=$1`,
+    [id]
+  );
   return result;
 };
 
