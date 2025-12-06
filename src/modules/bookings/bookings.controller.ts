@@ -23,12 +23,12 @@ const getBookings = async (req: Request, res: Response) => {
     const user = req.user;
     const result = await bookingServices.getBookings(user);
 
-    // if (result.rows.length === 0) {
-    //   return res.status(204).json({
-    //     success: true,
-    //     message: "No available vehicle",
-    //   });
-    // }
+    if (result.length === 0) {
+      return res.status(204).json({
+        success: true,
+        message: "No available vehicle",
+      });
+    }
 
     return res.status(200).json({
       success: true,
