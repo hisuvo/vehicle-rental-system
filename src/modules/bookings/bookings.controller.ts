@@ -20,7 +20,8 @@ const createBooking = async (req: Request, res: Response) => {
 
 const getBookings = async (req: Request, res: Response) => {
   try {
-    const result = await bookingServices.getBookings();
+    const user = req.user;
+    const result = await bookingServices.getBookings(user);
 
     if (result.rows.length === 0) {
       return res.status(204).json({
@@ -35,9 +36,10 @@ const getBookings = async (req: Request, res: Response) => {
       data: result.rows,
     });
   } catch (error: any) {
-    return res.status(200).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
+      details: error,
     });
   }
 };

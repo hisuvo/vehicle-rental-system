@@ -41,9 +41,17 @@ const createBooking = async (payload: Record<string, unknown>) => {
   return { ...result.rows[0], vehicle };
 };
 
-const getBookings = async () => {
-  const result = await pool.query(`SELECT * FROM bookings`);
+const getBookings = async (user: any) => {
+  const { id, role } = user;
 
+  // admin can show all bookings data
+  if (role === "admin") {
+    const result = await pool.query(`SELECT * FROM bookings`);
+    return result;
+  }
+
+  // customer show only her own booking data
+  const result = await pool.query(`SELECT * FROM bookings WHERE id=$1`, [id]);
   return result;
 };
 
