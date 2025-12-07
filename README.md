@@ -48,11 +48,17 @@ Login needs info example
 
 https://vehicle-rental-system-three.vercel.app/api/v1/users
 
-4. Admin can change user details and user can change without other thing
+4. Admin can change user details and Customer can update own profile only
 
 https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
 
-5. Only Admin can create Vehicle and need Jwt authorization bearar token
+5. Admin can delete a user only if no active bookings exist
+
+https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
+
+#### Vehicles
+
+6. Only Admin can create Vehicle and need Jwt authorization bearar token
 
 https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
 
@@ -66,11 +72,15 @@ create vehicle body expect data example:
         "availability_status": "available"
      }
 
-6. Publice can see all vehicles
+7. Publice can see all vehicles
 
 https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
 
-7. Only Admin can Update vehicle details, price, or availability status and need jwt bearar token
+8. Publice can see specific vehicle details
+
+https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
+
+9. Only Admin can Update vehicle details, price, or availability status and need jwt bearar token
 
 https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
@@ -84,10 +94,41 @@ update vehicle body expect data example:
         "availability_status": "available"
      }
 
-8. Only Admin can delete Vehicles only if no active bookings exist.
+10. Only Admin can delete Vehicles only if no active bookings exist.
 
 https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
-#### Vehicles
-
 #### Bookings
+
+11. Customer and Adimn can create new booking but need jwt bearar token
+
+https://vehicle-rental-system-three.vercel.app/api/v1/bookings
+
+booking body expect blow data
+
+    {
+        "customer_id": 1,
+        "vehicle_id": 2,
+        "rent_start_date": "2024-01-15",
+        "rent_end_date": "2024-01-20"
+    }
+
+12. Admin sees all Bookings vehicles, Customer sees own vehicles
+
+https://vehicle-rental-system-three.vercel.app/api/v1/bookings
+
+13. Customer cancel booking (before start date only) ,Admin mark as "returned (updates vehicle to "available"), System auto-mark as "returned" when period ends
+
+https://vehicle-rental-system-three.vercel.app/api/v1/bookings/:bookingId
+
+Admin update body expect
+
+    {
+        "status": "returned"
+    }
+
+Customer update body expect
+
+    {
+        "status": "cancelled"
+    }
