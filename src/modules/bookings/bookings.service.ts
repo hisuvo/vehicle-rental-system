@@ -140,6 +140,13 @@ const updateBooking = async (
     );
   }
 
+  if (status === "cancelled" || status === "returned") {
+    await pool.query(
+      `UPDATE vehicles SET availability_status='available' WHERE id=$1`,
+      [vehicle_id]
+    );
+  }
+
   if (bookingInfo.rows[0].status !== "active") {
     throw new Error(`Already ${bookingInfo.rows[0].status} booking at first`);
   }
