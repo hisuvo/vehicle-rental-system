@@ -19,7 +19,7 @@ This project is the vehicle rental management system managing backend api.The Au
 
 1. Reguster a new user account
 
-   https://vehicle-rental-system-three.vercel.app/api/v1/auth/signup
+https://vehicle-rental-system-three.vercel.app/api/v1/auth/signup
 
 Account create info example
 
@@ -33,7 +33,7 @@ Account create info example
 
 2. Login and receive JWT authentication token
 
-   https://vehicle-rental-system-three.vercel.app/api/v1/auth/signin
+https://vehicle-rental-system-three.vercel.app/api/v1/auth/signin
 
 Login needs info example
 
@@ -46,11 +46,47 @@ Login needs info example
 
 3. Get all user can see only admin
 
-   https://vehicle-rental-system-three.vercel.app/api/v1/users
+https://vehicle-rental-system-three.vercel.app/api/v1/users
 
 4. Admin can change user details and user can change without other thing
 
-   https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
+https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
+
+5. Only Admin can create Vehicle and need Jwt authorization bearar token
+
+https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
+
+create vehicle body expect data example:
+
+    {
+        "vehicle_name": "Toyota Camry 2024",
+        "type": "car",
+        "registration_number": "ABC-1234",
+        "daily_rent_price": 50,
+        "availability_status": "available"
+     }
+
+6. Publice can see all vehicles
+
+https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
+
+7. Only Admin can Update vehicle details, price, or availability status and need jwt bearar token
+
+https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
+
+update vehicle body expect data example:
+
+    {
+        "vehicle_name": "Toyota Camry 2024 Premium",
+        "type": "car",
+        "registration_number": "ABC-1234",
+        "daily_rent_price": 55,
+        "availability_status": "available"
+     }
+
+8. Only Admin can delete Vehicles only if no active bookings exist.
+
+https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
 #### Vehicles
 
