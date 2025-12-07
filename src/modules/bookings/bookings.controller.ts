@@ -54,10 +54,18 @@ const updateBooking = async (req: Request, res: Response) => {
       bookingId
     );
 
+    if (user?.role === "admin") {
+      return res.status(200).json({
+        success: true,
+        message: "Booking marked as returned. Vehicle is now available",
+        data: result,
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Booking cancelled successfully",
-      data: result.rows[0],
+      data: result?.rows[0],
     });
   } catch (error: any) {
     return res.status(500).json({

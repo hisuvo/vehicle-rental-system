@@ -43,62 +43,6 @@ const createBooking = async (payload: Record<string, unknown>) => {
   return { ...result.rows[0], vehicle };
 };
 
-// const getBookings = async (user: any) => {
-//   const { id, name, email, role } = user;
-
-//   // admin can show all bookings data
-//   if (role === "admin") {
-//     const result = await pool.query(`SELECT * FROM bookings`);
-
-//     let rows = result.rows;
-
-//     const adminResult = await Promise.all(
-//       rows.map(async (row) => {
-//         const { vehicle_id } = row;
-
-//         const getVehicle = await pool.query(
-//           `SELECT vehicle_name, registration_number FROM vehicles WHERE id=$1`,
-//           [vehicle_id]
-//         );
-
-//         return {
-//           ...result.rows[0],
-//           vehicle: getVehicle.rows[0],
-//         };
-//       })
-//     );
-
-//     return adminResult;
-//   }
-
-//   // customer show only her own booking data
-//   const result = await pool.query(
-//     `SELECT * FROM bookings WHERE customer_id=$1`,
-//     [id]
-//   );
-
-//   let rows = result.rows;
-
-//   const userResult = await Promise.all(
-//     rows.map(async (row) => {
-//       const { vehicle_id } = row;
-
-//       const getVehicle = await pool.query(
-//         `SELECT vehicle_name, registration_number,type FROM vehicles WHERE id=$1`,
-//         [vehicle_id]
-//       );
-
-//       return {
-//         ...result.rows[0],
-//         customer: { name, email },
-//         vehicle: getVehicle.rows[0],
-//       };
-//     })
-//   );
-
-//   return userResult;
-// };
-
 const getBookings = async (user: any) => {
   if (user.role === "customer") {
     const result = await pool.query(
@@ -164,15 +108,70 @@ const updateBooking = async (
   bookingID: any
 ) => {
   const { status } = payload;
-
   const { role } = user;
 
-  const result = await pool.query(
-    `UPDATE bookings SET status=$1 WHERE id=$2 RETURNING *`,
-    [status, bookingID]
+  const bookingInfo = await pool.query(
+    `SELECT rent_start_date,vehicle_id, rent_end_date, status FROM bookings WHERE id=$1`,
+    [bookingID]
   );
 
-  return result;
+  if (
+    new Date() > new Date(bookingInfo.rows[0].rent_end_date) &&
+    bookingInfo.rows[0].status === "active"
+  ) {
+    await pool.query(`UPDATE booking SER status=$1 WHERE id=$1`, [
+      "returned",
+      bookingID,
+    ]);
+
+    await pool.query(`UPDATE vehicles SET availability_status=$1 WHERE id=$2`, [
+      "available",
+      bookingInfo.rows[0].vehicle_id,
+    ]);
+  }
+
+  if (bookingInfo.rows[0].status !== "active") {
+    throw new Error(`Already ${bookingInfo.rows[0].status} booking at first`);
+  }
+
+  // user status is customer then he/she can only cancelled
+  if (role === "customer") {
+    if (new Date() > new Date(bookingInfo.rows[0].rent_start_date)) {
+      throw new Error(`Already start booking data`);
+    }
+
+    if (status !== "cancelled") {
+      throw new Error(`${role} can not ${status}`);
+    }
+
+    const result = await pool.query(
+      `UPDATE bookings SET status=$1 WHERE id=$2 RETURNING *`,
+      [status, bookingID]
+    );
+
+    return result;
+  }
+
+  // user status is admin then he/she can only returned
+  if (role === "admin") {
+    if (status !== "returned") {
+      throw new Error(`${role} can not ${status}`);
+    }
+
+    const result = await pool.query(
+      `UPDATE bookings SET status=$1 WHERE id=$2 RETURNING *`,
+      [status, bookingID]
+    );
+
+    const { vehicle_id } = result.rows[0];
+
+    const vehiclesUpdateStatus = await pool.query(
+      `UPDATE vehicles SET availability_status=$1 WHERE id=$2 RETURNING availability_status`,
+      ["available", vehicle_id]
+    );
+
+    return { ...result.rows[0], vehicle: vehiclesUpdateStatus.rows[0] };
+  }
 };
 
 export const bookingServices = {
