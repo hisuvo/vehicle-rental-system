@@ -3,6 +3,13 @@ import { pool } from "../../database/db";
 const createBooking = async (payload: Record<string, unknown>) => {
   const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
+  if (
+    new Date(rent_start_date as string).setHours(0, 0, 0, 0) <
+    new Date().setHours(0, 0, 0, 0)
+  ) {
+    throw new Error("Booking time start today or next a day");
+  }
+
   // booking time validation
   const strat = new Date(rent_start_date as string);
   const end = new Date(rent_end_date as string);
@@ -111,23 +118,26 @@ const updateBooking = async (
   const { role } = user;
 
   const bookingInfo = await pool.query(
-    `SELECT rent_start_date,vehicle_id, rent_end_date, status FROM bookings WHERE id=$1`,
+    `SELECT rent_start_date, vehicle_id, rent_end_date, status FROM bookings WHERE id=$1`,
     [bookingID]
   );
 
+  const { vehicle_id, rent_start_date, rent_end_date } = bookingInfo.rows[0];
+
   if (
-    new Date() > new Date(bookingInfo.rows[0].rent_end_date) &&
+    new Date().setHours(0, 0, 0, 0) >
+      new Date(rent_end_date).setHours(0, 0, 0, 0) &&
     bookingInfo.rows[0].status === "active"
   ) {
-    await pool.query(`UPDATE booking SER status=$1 WHERE id=$1`, [
+    await pool.query(`UPDATE bookings SET status=$1 WHERE id=$2`, [
       "returned",
       bookingID,
     ]);
 
-    await pool.query(`UPDATE vehicles SET availability_status=$1 WHERE id=$2`, [
-      "available",
-      bookingInfo.rows[0].vehicle_id,
-    ]);
+    await pool.query(
+      `UPDATE vehicles SET availability_status='available' WHERE id=$1`,
+      [vehicle_id]
+    );
   }
 
   if (bookingInfo.rows[0].status !== "active") {
@@ -136,7 +146,7 @@ const updateBooking = async (
 
   // user status is customer then he/she can only cancelled
   if (role === "customer") {
-    if (new Date() > new Date(bookingInfo.rows[0].rent_start_date)) {
+    if (new Date() > new Date(rent_start_date)) {
       throw new Error(`Already start booking data`);
     }
 

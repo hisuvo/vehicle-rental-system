@@ -28,12 +28,16 @@ const updateUsers = async (
     throw new Error("Admin only can change role");
   }
 
-  const result = await pool.query(
-    `UPDATE users SET name=$1, email=$2, phone=$3 WHERE id=$4 RETURNING name, email, phone, role`,
-    [name, email, phone, userId]
-  );
+  if (user.id === userId) {
+    const result = await pool.query(
+      `UPDATE users SET name=$1, email=$2, phone=$3 WHERE id=$4 RETURNING name, email, phone, role`,
+      [name, email, phone, userId]
+    );
 
-  return result;
+    return result;
+  } else {
+    throw new Error("Coustomer can change own details not other");
+  }
 };
 
 const deleteUsers = async (userId: any) => {

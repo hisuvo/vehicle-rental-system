@@ -61,7 +61,11 @@ const updateVehicles = async (
   return result;
 };
 
-const deletVehicles = async (vehicleId: any) => {
+const deletVehicles = async (user: any, vehicleId: any) => {
+  if (user.role !== "admin") {
+    throw new Error("Only admin can delete");
+  }
+
   const checkActiveBooking = await pool.query(
     `SELECT id FROM bookings WHERE id=$1 AND status='active'`,
     [vehicleId]
