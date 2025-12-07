@@ -18,6 +18,7 @@ This project is the vehicle rental management system managing backend api.The Au
 #### Authendtivation
 
 1. Reguster a new user account
+
    https://vehicle-rental-system-three.vercel.app/api/v1/auth/signup
 
 Account create info example
@@ -31,6 +32,7 @@ Account create info example
     }
 
 2. Login and receive JWT authentication token
+
    https://vehicle-rental-system-three.vercel.app/api/v1/auth/signin
 
 Login needs info example
@@ -43,9 +45,11 @@ Login needs info example
 #### Users
 
 3. Get all user can see only admin
+
    https://vehicle-rental-system-three.vercel.app/api/v1/users
 
 4. Admin can change user details and user can change without other thing
+
    https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
 
 #### Vehicles
