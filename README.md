@@ -11,9 +11,37 @@ This project is the vehicle rental management system managing backend api.The Au
 
 ## Setup & Usage Instructions.
 
-### setup Instructions:
+### setup Instructions.
 
-### Usage Instructions:
+1.  Clone the Project:
+
+        git clone https://github.com/hisuvo/vehicle-rental-system.git
+        cd vehicle-rental-system
+
+2.  Install Dependencies
+
+        npm install
+
+3.  Configure Environment Variables
+
+        PORT = 8000
+
+        CONNECTION_STR = 'postgresql://neondb_owner:npg_HZJoPymz2SQ5@ep-fancy-sky-ah8y8jc0-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+
+        PRIVATE_KEY =
+        'e310621343885d979f0d81339b0e3b235e9908880a2025ceb838b0e67727825afc87ace5f4e4b2aeaffc39a2082e01532016c9df2a56a596594ed1bca00bb2c6'
+
+4.  Run the Development Server
+
+        npm run dev
+
+5 Server will Start
+
+        http://localhost:8000
+
+
+
+### Usage Instructions.
 
 #### Authendtivation
 
