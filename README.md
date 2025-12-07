@@ -43,7 +43,7 @@ This project is the vehicle rental management system managing backend api.The Au
 
 #### Authendtivation
 
-1.  Reguster a new user account
+1.  Reguster a new user account (POST)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/auth/signup
 
@@ -57,7 +57,7 @@ Account create info example
             "role": "customer"
         }
 
-2.  Login and receive JWT authentication token
+2.  Login and receive JWT authentication token (POST)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/auth/signin
 
@@ -70,21 +70,21 @@ Login needs info example
 
 #### Users
 
-3.  Get all user can see only admin
+3.  Get all user can see only admin (GET)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/users
 
-4.  Admin can change user details and Customer can update own profile only
+4.  Admin can change user details and Customer can update own profile only (PUT)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
 
-5.  Admin can delete a user only if no active bookings exist
+5.  Admin can delete a user only if no active bookings exist (DELETE)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/users/:userId
 
 #### Vehicles
 
-6.  Only Admin can create Vehicle and need Jwt authorization bearar token
+6.  Only Admin can create Vehicle and need Jwt authorization bearar token (POST)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
 
@@ -98,15 +98,15 @@ create vehicle body expect data example:
         "availability_status": "available"
      }
 
-7.  Publice can see all vehicles
+7.  Publice can see all vehicles (GET)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/vehicles
 
-8.  Publice can see specific vehicle details
+8.  Publice can see specific vehicle details (GET)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
-9.  Only Admin can Update vehicle details, price, or availability status and need jwt bearar token
+9.  Only Admin can Update vehicle details, price, or availability status and need jwt bearar token (PUT)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
@@ -120,13 +120,13 @@ update vehicle body expect data example:
             "availability_status": "available"
         }
 
-10. Only Admin can delete Vehicles only if no active bookings exist.
+10. Only Admin can delete Vehicles only if no active bookings exist. (DELETE)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/vehicles/:vehicleId
 
 #### Bookings
 
-11. Customer and Adimn can create new booking but need jwt bearar token
+11. Customer and Adimn can create new booking but need jwt bearar token (POST)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/bookings
 
@@ -139,11 +139,11 @@ booking body expect blow data
             "rent_end_date": "2024-01-20"
         }
 
-12. Admin sees all Bookings vehicles, Customer sees own vehicles
+12. Admin sees all Bookings vehicles, Customer sees own vehicles (GET)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/bookings
 
-13. Customer cancel booking (before start date only) ,Admin mark as "returned (updates vehicle to "available"), System auto-mark as "returned" when period ends
+13. Customer cancel booking (before start date only) ,Admin mark as "returned (updates vehicle to "available"), System auto-mark as "returned" when period ends (PUT)
 
         https://vehicle-rental-system-three.vercel.app/api/v1/bookings/:bookingId
 
