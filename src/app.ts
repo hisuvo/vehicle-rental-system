@@ -1,11 +1,15 @@
 import express from "express";
 import initDB from "./database/db";
+import cors from "cors";
 import { authRouter } from "./modules/auth/auth.routes";
 import { vehiclesRouter } from "./modules/vehicles/vehciles.routes";
 import { bookingsRouter } from "./modules/bookings/bookings.routes";
 import { usersRouter } from "./modules/users/users.routes";
 
 const app = express();
+
+// -- Middleware --
+app.use(cors());
 
 // parse
 app.use(express.json());
